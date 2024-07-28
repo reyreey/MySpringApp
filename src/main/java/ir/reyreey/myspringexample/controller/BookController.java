@@ -2,6 +2,7 @@ package ir.reyreey.myspringexample.controller;
 
 import ir.reyreey.myspringexample.repository.entities.Book;
 import ir.reyreey.myspringexample.service.BookService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,13 +38,13 @@ public class BookController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void addBook(@RequestBody Book book){
+    public void addBook(@Valid@RequestBody Book book){
         bookService.insert(book);
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateBook(@RequestBody Book book){
+    public void updateBook(@Valid @RequestBody Book book){
         bookService.change(book);
     }
 
