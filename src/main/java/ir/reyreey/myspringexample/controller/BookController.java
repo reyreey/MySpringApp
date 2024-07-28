@@ -38,7 +38,7 @@ public class BookController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public void addBook(@Valid@RequestBody Book book){
+    public void addBook(@Valid @RequestBody Book book){
         bookService.insert(book);
     }
 
