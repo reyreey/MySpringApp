@@ -23,9 +23,9 @@ public class DefaultUserService implements UserService{
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public void insertUser(User user) {
+    public User insertUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Override

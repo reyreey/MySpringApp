@@ -8,5 +8,5 @@ import ir.reyreey.myspringexample.repository.entities.Role;
  * @created : 7/28/2024, Sunday
  **/
 public interface RoleService {
-    public void insertRole(Role role);
+    Role insertRole(Role role);
 }

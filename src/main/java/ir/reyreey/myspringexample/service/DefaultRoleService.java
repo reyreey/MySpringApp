@@ -16,7 +16,7 @@ public class DefaultRoleService implements RoleService{
     private RoleRepository roleRepository;
 
     @Override
-    public void insertRole(Role role) {
-        roleRepository.save(role);
+    public Role insertRole(Role role) {
+        return roleRepository.save(role);
     }
 }

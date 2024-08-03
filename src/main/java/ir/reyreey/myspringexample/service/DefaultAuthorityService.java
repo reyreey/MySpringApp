@@ -16,7 +16,7 @@ public class DefaultAuthorityService implements AuthorityService{
     private AuthorityRrepository authorityRrepository;
 
     @Override
-    public void insertAuthority(Authority authority) {
-        authorityRrepository.save(authority);
+    public Authority insertAuthority(Authority authority) {
+        return authorityRrepository.save(authority);
     }
 }

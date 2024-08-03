@@ -9,5 +9,5 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  * @created : 7/28/2024, Sunday
  **/
 public interface UserService extends UserDetailsService {
-    public void insertUser(User user);
+    User insertUser(User user);
 }

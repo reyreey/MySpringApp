@@ -9,5 +9,5 @@ import ir.reyreey.myspringexample.repository.entities.Authority;
  **/
 public interface AuthorityService {
 
-    public void insertAuthority(Authority authority);
+    public Authority insertAuthority(Authority authority);
 }

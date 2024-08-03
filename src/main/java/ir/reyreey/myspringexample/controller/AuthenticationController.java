@@ -23,11 +23,11 @@ public class AuthenticationController {
     private AuthenticationManager authenticationManager;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Boolean login(@Valid @RequestBody UserAuthenticationInfo info) {
+    public String login(@Valid @RequestBody UserAuthenticationInfo info) {
         var auth=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(info.getUsername(),
                 info.getPassword()));
 
-        return auth.isAuthenticated();
+        return auth.getAuthorities().toString();
     }
 
 
