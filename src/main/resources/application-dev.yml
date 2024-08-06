@@ -1,0 +1,17 @@
+app:
+  security:
+    jwt:
+      issuer: ${spring.application.name}
+      expires-after: 3600000
+      secret-key: change me in prod ... (You need at least 32 bytes to use HS256)
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/myspringexample
+    username: root
+    password: 123
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update

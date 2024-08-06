@@ -1,5 +1,6 @@
 package ir.reyreey.myspringexample.configuration;
 
+import ir.reyreey.myspringexample.controller.customization.JwtAuthenticationFilter;
 import ir.reyreey.myspringexample.repository.entities.Authority;
 import ir.reyreey.myspringexample.repository.entities.Role;
 import ir.reyreey.myspringexample.repository.entities.User;
@@ -7,6 +8,7 @@ import ir.reyreey.myspringexample.service.AuthorityService;
 import ir.reyreey.myspringexample.service.DefaultUserService;
 import ir.reyreey.myspringexample.service.RoleService;
 import ir.reyreey.myspringexample.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +20,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.ExceptionTranslationFilter;
 
 import java.util.Set;
 
@@ -28,6 +31,8 @@ import java.util.Set;
  **/
 @Configuration
 public class SecurityConfig {
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
 //    @Bean
 //    public CommandLineRunner commandLineRunner(UserService userService, AuthorityService authorityService, RoleService roleService) {
@@ -61,6 +66,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity security) throws Exception {
         security.csrf(AbstractHttpConfigurer::disable);//todo enable!!!!!!!!!!!!!!!!!!!
+
+        security.addFilterAfter(jwtAuthenticationFilter, ExceptionTranslationFilter.class);
+
         security.authorizeHttpRequests(matchRegistry -> {
             matchRegistry.requestMatchers("api/auth").permitAll();
             matchRegistry.anyRequest().authenticated();
