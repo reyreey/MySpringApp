@@ -1,11 +1,13 @@
 package ir.reyreey.myspringexample.controller.customization;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import ir.reyreey.myspringexample.service.exceptions.DataNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.naming.AuthenticationException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +33,22 @@ public class MyExceptionHandler {
                 generate(e),
                 HttpStatus.NOT_FOUND
         );
+     }
+
+     @ExceptionHandler(AuthenticationException.class)
+     public ResponseEntity<Map<String,String>> handleAuthenticationException(final AuthenticationException e) {
+         return new ResponseEntity<>(
+                 generate(e),
+                 HttpStatus.UNAUTHORIZED
+         );
+     }
+
+     @ExceptionHandler(JWTVerificationException.class)
+     public ResponseEntity<Map<String,String>> handleJWTVerificationException(final JWTVerificationException e) {
+         return new ResponseEntity<>(
+                 generate(e),
+                 HttpStatus.UNAUTHORIZED
+         );
      }
 
      private Map<String,String> generate(final Throwable t) {
