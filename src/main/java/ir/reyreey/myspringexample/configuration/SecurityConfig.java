@@ -1,28 +1,23 @@
 package ir.reyreey.myspringexample.configuration;
 
 import ir.reyreey.myspringexample.controller.customization.JwtAuthenticationFilter;
-import ir.reyreey.myspringexample.repository.entities.Authority;
-import ir.reyreey.myspringexample.repository.entities.Role;
-import ir.reyreey.myspringexample.repository.entities.User;
-import ir.reyreey.myspringexample.service.AuthorityService;
+import ir.reyreey.myspringexample.controller.customization.MyAccessDeniedHandler;
+import ir.reyreey.myspringexample.controller.customization.MyAuthenticationEntryPoint;
 import ir.reyreey.myspringexample.service.DefaultUserService;
-import ir.reyreey.myspringexample.service.RoleService;
-import ir.reyreey.myspringexample.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
-
-import java.util.Set;
 
 /**
  * @author : Reyreey
@@ -30,9 +25,16 @@ import java.util.Set;
  * @created : 7/28/2024, Sunday
  **/
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
+
+    @Autowired
+    private MyAccessDeniedHandler accessDeniedHandler;
+
+    @Autowired
+    private MyAuthenticationEntryPoint authenticationEntryPoint;
 
 //    @Bean
 //    public CommandLineRunner commandLineRunner(UserService userService, AuthorityService authorityService, RoleService roleService) {
@@ -66,6 +68,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity security) throws Exception {
         security.csrf(AbstractHttpConfigurer::disable);//todo enable!!!!!!!!!!!!!!!!!!!
+
+        security.sessionManagement(SessionManagementConfigurer -> {
+            SessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        });
+
+        security.exceptionHandling(ExceptionHandlingConfigurer -> {
+            ExceptionHandlingConfigurer.accessDeniedHandler(accessDeniedHandler);
+            ExceptionHandlingConfigurer.authenticationEntryPoint(authenticationEntryPoint);
+        });
 
         security.addFilterAfter(jwtAuthenticationFilter, ExceptionTranslationFilter.class);
 

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.naming.AuthenticationException;
+import java.nio.file.AccessDeniedException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,13 +20,6 @@ import java.util.Map;
  **/
 @RestControllerAdvice
 public class MyExceptionHandler {
-    @ExceptionHandler(Throwable.class)
-    public ResponseEntity<Map<String,String>> handleException(final Throwable t) {
-         return new ResponseEntity<>(
-                 generate(t),
-                 HttpStatus.BAD_REQUEST
-         );
-     }
 
      @ExceptionHandler(DataNotFoundException.class)
      public ResponseEntity<Map<String,String>> handleDataNotFoundException(final DataNotFoundException e) {
@@ -43,13 +37,30 @@ public class MyExceptionHandler {
          );
      }
 
-     @ExceptionHandler(JWTVerificationException.class)
-     public ResponseEntity<Map<String,String>> handleJWTVerificationException(final JWTVerificationException e) {
-         return new ResponseEntity<>(
-                 generate(e),
-                 HttpStatus.UNAUTHORIZED
-         );
-     }
+     //this exception doesn't occur in controller and is not seen by ExceptionTranslationFilter
+//     @ExceptionHandler(JWTVerificationException.class)
+//     public ResponseEntity<Map<String,String>> handleJWTVerificationException(final JWTVerificationException e) {
+//         return new ResponseEntity<>(
+//                 generate(e),
+//                 HttpStatus.UNAUTHORIZED
+//         );
+//     }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String,String>> handleAccessDeniedException(final AccessDeniedException e) {
+        return new ResponseEntity<>(
+                generate(e),
+                HttpStatus.FORBIDDEN
+        );
+    }
+
+    @ExceptionHandler(Throwable.class)
+    public ResponseEntity<Map<String,String>> handleException(final Throwable t) {
+        return new ResponseEntity<>(
+                generate(t),
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
+    }
 
      private Map<String,String> generate(final Throwable t) {
         var response = new HashMap<String, String>();
