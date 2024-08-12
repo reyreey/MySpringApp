@@ -2,16 +2,16 @@ package ir.reyreey.myspringexample.controller;
 
 import ir.reyreey.myspringexample.controller.customization.JwtHandler;
 import ir.reyreey.myspringexample.controller.customization.UserAuthenticationInfo;
+import ir.reyreey.myspringexample.repository.entities.User;
+import ir.reyreey.myspringexample.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +29,9 @@ public class AuthenticationController {
     @Autowired
     private JwtHandler jwtHandler;
 
+    @Autowired
+    private UserService service;
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String> login(@Valid @RequestBody UserAuthenticationInfo info) {
         var auth=authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(info.getUsername(),
@@ -44,5 +47,9 @@ public class AuthenticationController {
         return response;
     }
 
-
+    @GetMapping("/{username}")
+    @PreAuthorize("#username == authentication.name")
+    public User getUserInfo(@PathVariable String username) {
+        return (User) service.loadUserByUsername(username);
+    }
 }
