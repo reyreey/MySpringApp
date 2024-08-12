@@ -5,6 +5,7 @@ import ir.reyreey.myspringexample.controller.customization.MyAccessDeniedHandler
 import ir.reyreey.myspringexample.controller.customization.MyAuthenticationEntryPoint;
 import ir.reyreey.myspringexample.service.DefaultUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -51,6 +52,13 @@ public class SecurityConfig {
 //            userService.insertUser(new User("reyreey","abcd1234",Set.of(user)));
 //        };
 //    }
+
+    @Bean
+    public FilterRegistrationBean<JwtAuthenticationFilter> disableFilterAutoRegistration(JwtAuthenticationFilter jwtAuthenticationFilter) {
+        var registration = new FilterRegistrationBean<>(jwtAuthenticationFilter);
+        registration.setEnabled(false);
+        return registration;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
