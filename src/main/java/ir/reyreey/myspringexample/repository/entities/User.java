@@ -1,5 +1,6 @@
 package ir.reyreey.myspringexample.repository.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +26,7 @@ public class User implements UserDetails {
     @Column
     private String username;
     @Column
+    @JsonIgnore
     private String password;
 
     @Column
