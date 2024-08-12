@@ -1,5 +1,6 @@
 package ir.reyreey.myspringexample.controller.customization;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 
+import javax.naming.AuthenticationException;
 import java.io.IOException;
 
 /**
@@ -37,14 +39,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         var jwtToken = authHeader.replace("Bearer ", "").trim();
-        var decodedToken = jwtHandler.verifyToken(jwtToken);
+        try {
+            var decodedToken = jwtHandler.verifyToken(jwtToken);
 
-        SecurityContextHolder.getContext()
-                .setAuthentication(UsernamePasswordAuthenticationToken
-                .authenticated(decodedToken.getSubject(),
-                        null,
-                        AuthorityUtils.createAuthorityList(decodedToken.getClaim("authorities").asList(String.class))
-                    )
-                );
+            SecurityContextHolder.getContext()
+                    .setAuthentication(UsernamePasswordAuthenticationToken
+                            .authenticated(decodedToken.getSubject(),
+                                    null,
+                                    AuthorityUtils.createAuthorityList(decodedToken.getClaim("authorities").asList(String.class))
+                            )
+                    );
+        }catch (JWTVerificationException jwtException){
+            throw new TokenVerificationException(jwtException.getMessage());
+        }
     }
 }
